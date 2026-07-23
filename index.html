@@ -860,8 +860,14 @@ async function sendCoachMsg(text){
  const typingEl = coachAddMsg('ai', '⏳ Thinking…');
  typingEl.classList.add('typing');
 
+ // Coach backend (Ollama qwen3:14b) lives on golfsimserver, reachable via the
+ // tailnet Funnel. When served from a real host (GitHub Pages, tailnet), call the
+ // absolute endpoint; only use a relative path when dev-serving from the box itself.
+ const COACH_ENDPOINT = (location.hostname === '127.0.0.1' || location.hostname === 'localhost')
+   ? '/api/coach'
+   : 'https://golfsimserver.tail75d8e5.ts.net/fit/api/coach';
  try {
-  const resp = await fetch('/api/coach', {
+  const resp = await fetch(COACH_ENDPOINT, {
    method: 'POST',
    headers: {'Content-Type':'application/json'},
    body: JSON.stringify({messages: coachHistory})
@@ -873,7 +879,7 @@ async function sendCoachMsg(text){
   typingEl.textContent = reply;
  } catch(e) {
   typingEl.classList.remove('typing');
-  typingEl.textContent = '⚠️ Coach unavailable — check server.';
+  typingEl.textContent = '⚠️ Coach unavailable — make sure Tailscale is ON on your phone, then retry.';
  }
  sendBtn.disabled = false;
  document.getElementById('coachMessages').scrollTop = 9999;
