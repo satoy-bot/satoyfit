@@ -865,11 +865,12 @@ async function sendCoachMsg(text){
  // absolute endpoint; only use a relative path when dev-serving from the box itself.
  const COACH_ENDPOINT = (location.hostname === '127.0.0.1' || location.hostname === 'localhost')
    ? '/api/coach'
-   : 'https://golfsimserver.tail75d8e5.ts.net/fit/api/coach';
+   : 'https://golfsimserver.tail75d8e5.ts.net/api/coach';
+ const COACH_TOKEN = '75ccSOgtvfi7xhWpBGYZr098KLaTiEsr8ns_XvE9098';
  try {
   const resp = await fetch(COACH_ENDPOINT, {
    method: 'POST',
-   headers: {'Content-Type':'application/json'},
+   headers: {'Content-Type':'application/json', 'Authorization': 'Bearer ' + COACH_TOKEN},
    body: JSON.stringify({messages: coachHistory})
   });
   const data = await resp.json();
